@@ -12,27 +12,29 @@ number of Covid-19 cases, ICU entries, and deaths are published each epidemiolog
 
 ## Model
 
-We propose a Bayesian logistic regression to estimate the relative risk $RR$ of the vaccinated group vs unvaccinated group with respect to be a Covid-19 case, enter in intensive unit care (ICU) and death. The vaccine efficacy is defined as $VE = 1-RR$.
-
-$VE$ **does not** depend on the age group variable $a$ in this model.
+We propose a Bayesian logistic regression to estimate the relative risk RR of the vaccinated group vs unvaccinated group with respect to be a Covid-19 case, enter in intensive unit care (ICU) and death. The vaccine efficacy is defined as VE = 1-RR.
 
 **Observations:**
 
-- $N_{c}[a]$: number of cases in the age group $a$
-- $N_{c,v}[a]$: number of cases vaccinated in the age group $a$
-- $p_{v}[a]$: proportion of vaccinated in the age group $a$
+<!-- - $N_{c}[a]$: number of cases in the age group $a$ -->
+<!-- - $N_{c,v}[a]$: number of cases vaccinated in the age group $a$ -->
+<!-- - $p_{v}[a]$: proportion of vaccinated in the age group $a$ -->
+
+- Nc(a): number of cases in the age group a
+- Ncv(a): number of cases vaccinated in the age group a
+- pv(a): proportion of vaccinated in the age group a
 
 **Parameters:**
 
-- $r=\log(RR)$
-- $p_{v|c}[a]$: the proportion of vaccinated in the cases, which is directly link to $r$ by the following relation:
-  $$
-  \ln\left(\frac{p_{v|c}[a]}{1-p_{v|c}[a]}\right) = \ln\left(\frac{p_{v}[a]}{1-p_{v}[a]}\right) + r
-  $$
+- r= ln(RR)
+- pvc(a): proportion of vaccinated in the cases, which is directly link to r by the following relation
 
-**Prior:** $r \sim \mathcal{N}(0,1)$
+  ln[pvc(a)/1-pvc(a)] = ln[pv(a)/(1-pv(a)] + r
 
-**Likelihood:** We compute the likelihood from the following distribution $$N_{c,v}[a] \sim \mathrm{Binomial}\left(p_{v|c}[a],N_{c}[a]\right)$$
+**Prior:** r ~ Normal(0,1)
+
+**Likelihood:** We compute the likelihood from the following distribution
+Ncv(a) ~ Binomial(pvc(a),Nc(a))
 
 **Use**
 
