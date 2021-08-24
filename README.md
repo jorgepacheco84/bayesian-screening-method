@@ -1,9 +1,9 @@
 # Bayesian screening method to estimate vaccine efficacy in Chile
 
-We propose a Python script to estimate the vaccine efficacy against SARS-CoV-2 in Chile. We use a Bayesian regression strongly based on the screening method introduced in
+We propose a Python script to estimate the vaccine efficacy against SARS-CoV-2 in Chile. We use a Bayesian logistic regression which is strongly based on the screening method introduced in
 **[Farrington, 1993](https://pubmed.ncbi.nlm.nih.gov/8225751/)**.
 
-**\*Disclamer:** We have to interpret with caution the vaccine efficacy estimated here. Age is the only confounding variable available in the dataset. To have a better estimation of the real vaccine efficacy we should take in account other important variables as sex, risk factor, location... Moreover Chile has authorized several vaccines and we do not have the data by type of vaccine.\*
+_**Disclamer:** We have to interpret with caution the vaccine efficacy estimated here. Age is the only confounding variable available in the dataset. To have a better estimation of the real vaccine efficacy we should take in account other important variables as sex, risk factor, location... Moreover Chile has authorized several vaccines and we do not have the data by type of vaccine._
 
 ## Data
 
