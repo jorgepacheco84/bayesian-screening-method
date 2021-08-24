@@ -44,4 +44,15 @@ Then run
 python main.py
 ```
 
-The VE estimations and charts are in the [ouput]() folder.
+**Results**
+
+The VE estimations tables and charts are in the [ouput](https://github.com/AntoineBraultChile/bayesian-screening-method/tree/main/output) folder.
+
+How to read the columns names of the tables:
+
+- median: median of the posterior
+- lower_bound: lower bound of the credible interval 95%
+- upper_bound: upper bound of the credible interval 95%
+- cases_VE: vaccine efficacy against cases
+- icu: vaccine efficacy against entry in intensive unit care
+- deaths: vaccine efficacy against death
