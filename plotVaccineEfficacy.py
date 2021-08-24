@@ -51,7 +51,7 @@ def plot(split):
     plt.figtext(0, 0.01, "Esimation with a bayesian screening method only ajusted by age with open data from the Science Ministery of Chile. Github repository for more information: https://github.com/AntoineBraultChile/bayesian-screening-method.", ha='left', fontsize=12, color='grey')
 
     plt.legend()
-    plt.savefig('output/plot-vaccine-efficacy-by'+split+'.png')
+    plt.savefig('output/plot-vaccine-efficacy-by-'+split+'.png')
 
 if __name__ == "__main__":
     args = parse_arguments()

@@ -7,7 +7,7 @@ def main():
     download.downloadData()
 
     # compile and training the model
-    #trainModel.train()
+    trainModel.train()
 
     # plot the graph by split variable
     plt.plot('epidemiologicalWeek')

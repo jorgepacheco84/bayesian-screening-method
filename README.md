@@ -26,7 +26,7 @@ We propose a Bayesian logistic regression to estimate the relative risk RR of th
 
 **Parameters:**
 
-- r= ln(RR)
+- r = ln(RR)
 - pvc(a): proportion of vaccinated in the Nc(a) cases, which is directly linked to r by the following relation
 
   ln[pvc(a)/1-pvc(a)] = ln[pv(a)/(1-pv(a)] + r
@@ -58,3 +58,6 @@ How to read column names of the tables:
 - cases_VE: vaccine efficacy against cases
 - icu: vaccine efficacy against entry in intensive unit care
 - deaths: vaccine efficacy against death
+
+![alt text](https://github.com/AntoineBraultChile/bayesian-screening-method/blob/main/output/plot-vaccine-efficacy-by-epidemiologicalWeek.png?raw=true)
+![alt text](https://github.com/AntoineBraultChile/bayesian-screening-method/blob/main/output/plot-vaccine-efficacy-by-ageGroup.png?raw=true)
