@@ -10,14 +10,30 @@ from os import path
 
 
 # parse data function
-def parseData(data, typeOfEfficacy, week):
-    dataW = data[data['semana_epidemiologica']==week]
-    NAge = int(dataW['grupo_edad'].shape[0])
-    NCases = (dataW[typeOfEfficacy+'Vac']+dataW[typeOfEfficacy+'NoVac']).values.astype(int)
-    NCasesVaccinated = dataW[typeOfEfficacy+'Vac'].values.astype(int)
-    N = (dataW['pobVac']+dataW['pobNoVac']).values
-    NVaccinated = dataW['pobVac'].values
-    return {'NAge':NAge,'NCases':NCases,'NCasesVaccinated':NCasesVaccinated,'N':N,'NVaccinated':NVaccinated }
+def parseData(data, typeOfEfficacy):
+    # dataW = data[data['epidemiologicalWeek']==week]
+    NAge = int(data['ageGroup'].shape[0])
+    NCases = (data[typeOfEfficacy+'Vaccinated']+data[typeOfEfficacy+'NoVaccinated']).values.astype(int)
+    NCasesVaccinated = data[typeOfEfficacy+'Vaccinated'].values.astype(int)
+    N = (data['populationVaccinated']+data['populationNoVaccinated']).values
+    NVaccinated = data['populationVaccinated'].values
+    return {'NAge':NAge,'NCases':NCases,'NCasesVaccinated':NCasesVaccinated,'N':N,'NVaccinated':NVaccinated}
+
+# split data set with respect to a variable
+def splitData(data, splitVariable):
+    if(splitVariable == 'epidemiologicalWeek'):
+        week = data['epidemiologicalWeek'].unique()
+        listOfDataBySplit = {}
+        for w in week:
+            listOfDataBySplit[w] = data[data['epidemiologicalWeek']==w]
+
+    elif(splitVariable == 'ageGroup'):
+        young = [ '21 - 30 años', '31 - 40 años', '41 - 50 años',
+       '51 - 60 años', '61 - 70 años']
+        old = ['71 - 80 años', '80 años o más']
+        listOfDataBySplit = {'21-70': data[data['ageGroup'].isin(young)], '>70': data[data['ageGroup'].isin(old)]}
+
+    return listOfDataBySplit
 
 
 def train():
@@ -27,22 +43,31 @@ def train():
     # import data
     data = pd.read_csv('data/incidence-vaccinated-unvaccinated-by-age.csv')
 
-    # training for each type of efficacy and each epidemiological week
-    typeOfEfficacy= ['casos', 'uci', 'def']
-    week = data['semana_epidemiologica'].unique().tolist()
-    statistics = pd.DataFrame(index=week)
-    statistics.index.name = 'semana_epidemiologica'
+    # # training for each type of efficacy and each epidemiological week
+    # if(splitVariable =='epidemiologicalWeek'):
+    #     split = data['epidemiologicalWeek'].unique().tolist()
+    #     statistics = pd.DataFrame(index=split)
+    #     statistics.index.name = 'epidemiologicalWeek'
+    # else if(splitVariable =='ageGroup'):
 
-    for typeOf in typeOfEfficacy:
-        for w in week:
-            fit = smStan.sampling(data=parseData(data,typeOf, w), iter=10000, chains=4, warmup=5000,  seed=101, n_jobs=4)
-            vaccineEfficacity = fit.extract()['VE']*100
-            statistics.loc[w,['lower_bound_'+typeOf,'upper_bound_'+typeOf]] = az.hdi(vaccineEfficacity,hdi_prob=0.95) # bounds of higher distribution interval of the posterior
-            statistics.loc[w,['median_'+typeOf]] = np.median(vaccineEfficacity) # median
 
-    if not path.exists('output'):
-        mkdir('output')
-    statistics.to_csv('output/estimation-VE-ajusted-by-age-each-week.csv')
+    splitVariables = ['epidemiologicalWeek', 'ageGroup']
+
+    for split in splitVariables:
+        dataList= splitData(data,split)
+        keys = dataList.keys()
+        statistics = pd.DataFrame(index=keys)
+        typeOfEfficacy= ['cases', 'icu', 'deaths']
+        for k in keys:
+            for typeOf in typeOfEfficacy:
+                fit = smStan.sampling(data=parseData(dataList[k],typeOf), iter=10000, chains=4, warmup=5000,  seed=101, n_jobs=4)
+                vaccineEfficacity = fit.extract()['VE']*100
+                statistics.loc[k,[typeOf+'_VE_lower_bound',typeOf+'_VE_upper_bound']] = az.hdi(vaccineEfficacity,hdi_prob=0.95) # bounds of higher distribution interval of the posterior
+                statistics.loc[k,[typeOf+'_VE_median']] = np.median(vaccineEfficacity) # median
+
+        if not path.exists('output'):
+            mkdir('output')
+        statistics.to_csv('output/estimation-VE-by-'+split+'.csv')
 
 
 if __name__ == "__main__":

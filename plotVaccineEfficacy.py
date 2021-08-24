@@ -6,6 +6,8 @@ import datetime
 import seaborn as sns
 sns.set()
 
+import argparse
+
 SMALL_SIZE = 15
 MEDIUM_SIZE = 15
 BIGGER_SIZE = 20
@@ -19,41 +21,38 @@ plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
 #plt.rc('figure', titlesize=BIGGER_SIZE)  # fo
 
 
-def plot():
-    statistics = pd.read_csv('output/estimation-VE-ajusted-by-age-each-week.csv', index_col=0)
-    week = statistics.index.unique()
-    numberOfWeek = week[-1]
-    sundayOfWeek = pd.date_range("2021-01-03", periods=numberOfWeek, freq="W")
-    sturdayOfWeek = pd.date_range("2021-01-09", periods=numberOfWeek, freq="W")
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-s", "--splitVariable", help="""Plot by epidemiological week or by age""")
+    return parser.parse_args()
 
-    sundayOfWeek = pd.to_datetime(sundayOfWeek,  format="%Y-%m-%d").strftime("%d-%m-%y")
-    sturdayOfWeek = pd.to_datetime(sturdayOfWeek,  format="%Y-%m-%d").strftime("%d-%m-%y")
+def plot(split):
+    statistics = pd.read_csv('output/estimation-VE-by-'+split+'.csv', index_col=0)
+    keys = statistics.index.unique()
 
-    date = []
-    for w in week:
-        date.append(sundayOfWeek[w-1]+'\n'+sturdayOfWeek[w-1])
-
-    typeOfEfficacity = ['casos', 'uci', 'def']
-
+    typeOfEfficacity = ['cases', 'icu', 'deaths']
+    title ={'epidemiologicalWeek':'epidemiological week', 'ageGroup':'age group'}
     dicSE = dict(zip(typeOfEfficacity,['cases','ICU','deaths']))
     fig, ax=plt.subplots(1,3,figsize=(25,10))
-    fig.suptitle("Estimation of vaccine efficacy ajusted by age each epidemiological week in Chile", fontsize=20)
+    fig.suptitle("Estimation of vaccine efficacy by "+ title[split] +" in Chile", fontsize=20)
     for i in range(3):
-        ax[i].scatter(date, statistics['median_'+typeOfEfficacity[i]], label='median')
-        ax[i].set_title('Vaccine efficacy to prevent '+dicSE[typeOfEfficacity[i]]+' ajusted by age')
+        ax[i].scatter(keys, statistics[typeOfEfficacity[i]+'_VE_median'], label='median')
+        ax[i].set_title('Vaccine efficacy to prevent '+dicSE[typeOfEfficacity[i]]+' by ' +title[split])
         ax[i].set_ylabel('Vaccine efficacy (%)')
         ax[i].set_xlabel('Epidemiological week')
         ax[i].set_ylim(0,100)
         labeled = False
         indexWeek = 0
-        for w in week:
+        for k in keys:
             label = 'CI(95%)' if labeled == False else ''
             labeled = True
-            ax[i].axvline(x=date[indexWeek], ymin=statistics.loc[w,'lower_bound_'+typeOfEfficacity[i]]/100, ymax=statistics.loc[w,'upper_bound_'+typeOfEfficacity[i]]/100, label=label)
+            ax[i].axvline(x=k, ymin=statistics.loc[k,typeOfEfficacity[i]+'_VE_lower_bound']/100, ymax=statistics.loc[k,typeOfEfficacity[i]+'_VE_upper_bound']/100, label=label)
             indexWeek+=1
-    plt.figtext(0.3, 0.01, "Elaboración a partir del base de datos abiertos COVID-19 de MinCiencia (Chile).", ha='right', fontsize=15)
+    plt.figtext(0, 0.01, "Esimation with a bayesian screening method only ajusted by age with open data from the Science Ministery of Chile. Github repository for more information: https://github.com/AntoineBraultChile/bayesian-screening-method.", ha='left', fontsize=12, color='grey')
+
     plt.legend()
-    plt.savefig('output/plot-vaccine-efficacy.png')
+    plt.savefig('output/plot-vaccine-efficacy-by'+split+'.png')
 
 if __name__ == "__main__":
-    plot()
+    args = parse_arguments()
+    plot(args.splitVariable)
