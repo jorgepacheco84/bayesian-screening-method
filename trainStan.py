@@ -8,6 +8,7 @@ import arviz as az
 from os import mkdir
 from os import path
 
+
 # parse data function
 def parseData(data, typeOfEfficacy, week):
     dataW = data[data['semana_epidemiologica']==week]
@@ -21,7 +22,7 @@ def parseData(data, typeOfEfficacy, week):
 
 def train():
     # compile in C++ stan model
-    smStan = ps.StanModel(file="model.stan") #UNCOMMENT TO COMPILE IN C++
+    smStan = ps.StanModel(file="model.stan", verbose=True) #UNCOMMENT TO COMPILE IN C++
 
     # import data
     data = pd.read_csv('data/incidence-vaccinated-unvaccinated-by-age.csv')

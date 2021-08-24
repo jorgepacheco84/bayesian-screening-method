@@ -51,7 +51,7 @@ def plot():
             labeled = True
             ax[i].axvline(x=date[indexWeek], ymin=statistics.loc[w,'lower_bound_'+typeOfEfficacity[i]]/100, ymax=statistics.loc[w,'upper_bound_'+typeOfEfficacity[i]]/100, label=label)
             indexWeek+=1
-    plt.figtext(0.3, 0.01, "Elaboración a partir del dase de datos abiertos COVID-19 de MinCiencia (Chile).", ha='right', fontsize=15)
+    plt.figtext(0.3, 0.01, "Elaboración a partir del base de datos abiertos COVID-19 de MinCiencia (Chile).", ha='right', fontsize=15)
     plt.legend()
     plt.savefig('output/plot-vaccine-efficacy.png')
 
