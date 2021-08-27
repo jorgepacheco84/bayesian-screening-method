@@ -39,7 +39,7 @@ def plot(split):
         ax[i].scatter(keys, statistics[typeOfEfficacity[i]+'_VE_median'], label='median')
         ax[i].set_title('Vaccine efficacy to prevent '+dicSE[typeOfEfficacity[i]]+' by ' +title[split])
         ax[i].set_ylabel('Vaccine efficacy (%)')
-        ax[i].set_xlabel('Epidemiological week')
+        ax[i].set_xlabel(title[split])
         ax[i].set_ylim(0,100)
         labeled = False
         indexWeek = 0
