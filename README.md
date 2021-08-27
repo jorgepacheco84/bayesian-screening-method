@@ -29,7 +29,7 @@ We propose a Bayesian logistic regression to estimate the relative risk RR of th
 - r = ln(RR)
 - pvc(a): proportion of cases vaccinated, which is directly linked to r by the following relation
 
-  ln[pvc(a)/1-pvc(a)] = ln[pv(a)/(1-pv(a)] + r
+  ln[pvc(a)/(1-pvc(a))] = ln[pv(a)/(1-pv(a))] + r
 
 **Prior:** r ~ Normal(0,1)
 
